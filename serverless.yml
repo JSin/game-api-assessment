@@ -1,0 +1,18 @@
+service:
+  name: game-api-assessment
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+functions:
+  timestamp:
+    handler: src/handlers/timestamp.unixTimeMs
+    events:
+      - http:
+          method: get
+          path: Timestamp
