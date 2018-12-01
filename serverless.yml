@@ -16,3 +16,18 @@ functions:
       - http:
           method: get
           path: Timestamp
+    memorySize: 128
+  transaction:
+    handler: src/handlers/user.transactionRecording
+    events:
+      - http:
+          method: post
+          path: Transaction
+    memorySize: 512
+  transactionStats:
+    handler: src/handlers/user.transactionStats
+    events:
+      - http:
+          method: post
+          path: TransactionStats
+    memorySize: 512
