@@ -37,7 +37,6 @@ const saveTransactionInDB = async (transaction: TransactionRequest): Promise<Suc
     if (e.name === ErrorNamesDynamoDB.ConditionalCheckFailedException) {
       throw new BadRequestError('Transaction Id already exists');
     }
-    console.error(e);
     throw e;
   }
 
@@ -78,7 +77,6 @@ export const getTransacationStatsByUserId = async (
     if (e.name === ErrorNamesDynamoDB.ResourceNotFoundException) {
       throw new BadRequestError('Invalid User Id');
     }
-    console.error(e);
     throw e;
   }
 };

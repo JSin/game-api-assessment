@@ -24,6 +24,7 @@ export const transactionRecording: APIGatewayProxyHandler = async (
     if (e instanceof BadRequestError) {
       return createErrorResponse(e.message);
     }
+    console.error(e);
     return createErrorResponse('Oooops. Something went wrong');
   }
 };
@@ -47,6 +48,7 @@ export const transactionStats: APIGatewayProxyHandler = async (
     if (e instanceof BadRequestError) {
       return createErrorResponse(e.message);
     }
+    console.error(e);
     return createErrorResponse('Oooops. Something went wrong');
   }
 };
@@ -73,6 +75,7 @@ export const userSave: APIGatewayProxyHandler = async (
     if (e instanceof BadRequestError) {
       return createErrorResponse(e.message);
     }
+    console.error(e);
     return createErrorResponse('Oooops. Something went wrong');
   }
 };
@@ -99,6 +102,7 @@ export const userLoad: APIGatewayProxyHandler = async (
     if (e instanceof BadRequestError) {
       return createErrorResponse(e.message);
     }
+    console.error(e);
     return createErrorResponse('Oooops. Something went wrong');
   }
 };

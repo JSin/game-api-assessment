@@ -19,7 +19,6 @@ export const updateLeaderboardScore = async (userScore: ScorePostRequest): Promi
     );
   } catch (e) {
     if (e.name !== ErrorNamesDynamoDB.ItemNotFoundException) {
-      console.error(e);
       throw e;
     }
   }
@@ -48,34 +47,29 @@ export const updateLeaderboardScore = async (userScore: ScorePostRequest): Promi
       // If ConditionalCheckFailedException happens it means you somehow posted
       // two high scores at the same time. Anyways to be safe I let the DB check for conflicts.
       if (e.name !== ErrorNamesDynamoDB.ConditionalCheckFailedException) {
-        console.error(e);
         throw e;
       }
     }
   }
 
-  try {
-    let rank = 0;
-    for await (const record of db.query(
-      Leaderboard,
-      { LeaderboardId: userScore.LeaderboardId },
-      { indexName: 'ScoreIndex', scanIndexForward: false },
-    )) {
-      rank += 1;
-      if (record.UserId === userScore.UserId) {
-        return {
-          UserId: record.UserId,
-          LeaderboardId: record.LeaderboardId,
-          Score: record.Score,
-          Rank: rank,
-        };
-      }
+  let rank = 0;
+  for await (const record of db.query(
+    Leaderboard,
+    { LeaderboardId: userScore.LeaderboardId },
+    { indexName: 'ScoreIndex', scanIndexForward: false },
+  )) {
+    rank += 1;
+    if (record.UserId === userScore.UserId) {
+      return {
+        UserId: record.UserId,
+        LeaderboardId: record.LeaderboardId,
+        Score: record.Score,
+        Rank: rank,
+      };
     }
-  } catch (e) {
-    console.error(e);
   }
 
-  throw new Error();
+  throw new Error('Could not find user in leaderboard');
 };
 
 export const getLeaderboardEntries = async (leadboardInfo: LeaderboardGetRequest): Promise<LeaderboardGetResponse> => {
@@ -90,35 +84,30 @@ export const getLeaderboardEntries = async (leadboardInfo: LeaderboardGetRequest
   const entries: LeaderboardEntries[] = [];
   let userObject: ScorePostResponse;
   const lastRank = leadboardInfo.Offset + leadboardInfo.Limit;
-  try {
-    for await (const record of db.query(
-      Leaderboard,
-      { LeaderboardId: leadboardInfo.LeaderboardId },
-      { indexName: 'ScoreIndex', scanIndexForward: false },
-    )) {
-      rank += 1;
-      if (record.UserId === leadboardInfo.UserId) {
-        userObject = {
-          UserId: record.Score,
-          LeaderboardId: record.LeaderboardId,
-          Score: record.Score,
-          Rank: rank,
-        };
-      }
-      if (rank > leadboardInfo.Offset && rank <= lastRank) {
-        entries.push({
-          UserId: record.UserId,
-          Score: record.Score,
-          Rank: rank,
-        });
-      }
-      if (userObject !== undefined && rank >= lastRank) {
-        break;
-      }
+  for await (const record of db.query(
+    Leaderboard,
+    { LeaderboardId: leadboardInfo.LeaderboardId },
+    { indexName: 'ScoreIndex', scanIndexForward: false },
+  )) {
+    rank += 1;
+    if (record.UserId === leadboardInfo.UserId) {
+      userObject = {
+        UserId: record.Score,
+        LeaderboardId: record.LeaderboardId,
+        Score: record.Score,
+        Rank: rank,
+      };
     }
-  } catch (e) {
-    console.error(e);
-    throw e;
+    if (rank > leadboardInfo.Offset && rank <= lastRank) {
+      entries.push({
+        UserId: record.UserId,
+        Score: record.Score,
+        Rank: rank,
+      });
+    }
+    if (userObject !== undefined && rank >= lastRank) {
+      break;
+    }
   }
   return {
     ...userObject,

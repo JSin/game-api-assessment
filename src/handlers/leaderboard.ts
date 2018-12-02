@@ -26,6 +26,7 @@ export const createLeaderboardScore: APIGatewayProxyHandler = async (
     if (e instanceof BadRequestError) {
       return createErrorResponse(e.message);
     }
+    console.error(e);
     return createErrorResponse('Oooops. Something went wrong');
   }
 };
@@ -58,6 +59,7 @@ export const leaderboardGet: APIGatewayProxyHandler = async (
     if (e instanceof BadRequestError) {
       return createErrorResponse(e.message);
     }
+    console.error(e);
     return createErrorResponse('Oooops. Something went wrong');
   }
 };

@@ -12,18 +12,12 @@ export const saveUserData = async (userData: UserSaveRequest): Promise<SuccessRe
     userModel = await db.get(Object.assign(new User(), { UserId: userData.UserId }));
   } catch (e) {
     if (e.name !== ErrorNamesDynamoDB.ItemNotFoundException) {
-      console.error(e);
       throw e;
     }
   }
 
-  try {
-    userModel.Data = Object.assign(userModel.Data, userData.Data);
-    db.update(userModel);
-  } catch (e) {
-    console.error(e);
-    throw e;
-  }
+  userModel.Data = Object.assign(userModel.Data, userData.Data);
+  db.update(userModel);
 
   return { Success: true };
 };
@@ -38,7 +32,6 @@ export const getUserData = async (userReq: UserLoadRequest): Promise<any> => {
     if (e.name === ErrorNamesDynamoDB.ItemNotFoundException) {
       return {};
     }
-    console.error(e);
     throw e;
   }
 };
