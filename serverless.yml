@@ -31,3 +31,17 @@ functions:
           method: post
           path: TransactionStats
     memorySize: 512
+  scorePost:
+    handler: src/handlers/leaderboard.createLeaderboardScore
+    events:
+      - http:
+          method: post
+          path: ScorePost
+    memorySize: 512
+  leaderboardGet:
+    handler: src/handlers/leaderboard.leaderboardGet
+    events:
+      - http:
+          method: post
+          path: LeaderboardGet
+    memorySize: 512

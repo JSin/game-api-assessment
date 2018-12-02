@@ -8,9 +8,9 @@ import {
   TransactionStatsRequest,
   TransactionStatsResponse,
   SuccessResponse,
-  ErrorResponse,
 } from '../constants/interfaces';
 import { Transaction, TransactionStats } from '../models';
+import { ErrorNamesDynamoDB } from '../constants/enums';
 
 export const saveTransaction = async (transaction: TransactionRequest): Promise<SuccessResponse> => {
   if (!isValidTransaction(transaction)) {
@@ -34,11 +34,11 @@ const saveTransactionInDB = async (transaction: TransactionRequest): Promise<Suc
     });
     await saveTransactionStats(transaction);
   } catch (e) {
-    if (e.name === 'ConditionalCheckFailedException') {
+    if (e.name === ErrorNamesDynamoDB.ConditionalCheckFailedException) {
       throw new BadRequestError('Transaction Id already exists');
     }
     console.error(e);
-    throw new Error();
+    throw e;
   }
 
   return {
@@ -71,16 +71,16 @@ const saveTransactionStats = async (transaction: TransactionRequest) => {
 
 export const getTransacationStatsByUserId = async (
   tranStats: TransactionStatsRequest,
-): Promise<TransactionStatsResponse | ErrorResponse> => {
+): Promise<TransactionStatsResponse> => {
   const tranStatsModel = new TransactionStats();
   tranStatsModel.UserId = tranStats.UserId;
   try {
     return await db.get(tranStatsModel);
   } catch (e) {
-    if (e.name === 'ResourceNotFoundException') {
+    if (e.name === ErrorNamesDynamoDB.ResourceNotFoundException) {
       throw new BadRequestError('Invalid User Id');
     }
     console.error(e);
-    throw new Error();
+    throw e;
   }
 };

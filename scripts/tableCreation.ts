@@ -1,7 +1,6 @@
 import { DynamoDB } from 'aws-sdk';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
-import Transaction from '../src/models/transaction';
-import TransactionStats from '../src/models/transactionStats';
+import { Transaction, TransactionStats, Leaderboard } from '../src/models';
 
 let options: DynamoDB.Types.ClientConfiguration = {};
 if (process.env.IS_OFFLINE) {
@@ -22,9 +21,19 @@ const initTables = async () => {
   };
   try {
     await dataMapper.ensureTableExists(Transaction, readWriteCapacity);
-    console.log('Transaction table exists');
+    console.log('Transaction table is available');
     await dataMapper.ensureTableExists(TransactionStats, readWriteCapacity);
-    console.log('TransactionStats table exists');
+    console.log('TransactionStats table is available');
+    await dataMapper.ensureTableExists(Leaderboard, {
+      ...readWriteCapacity,
+      indexOptions: {
+        ScoreIndex: {
+          type: 'local',
+          projection: 'all',
+        }
+      }
+    });
+    console.log('Leaderboard table is available');
   } catch (e) {
     console.error(e.message);
   }
