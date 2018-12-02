@@ -53,3 +53,12 @@ export interface LeaderboardEntries {
   Score: number;
   Rank: number;
 }
+
+export interface UserSaveRequest {
+  UserId: number;
+  Data: any;
+}
+
+export interface UserLoadRequest {
+  UserId: number;
+}

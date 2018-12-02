@@ -45,3 +45,18 @@ functions:
           method: post
           path: LeaderboardGet
     memorySize: 512
+  userSave:
+    handler: src/handlers/user.userSave
+    events:
+      - http:
+          method: post
+          path: UserSave
+    memorySize: 512
+  userLoad:
+    handler: src/handlers/user.userLoad
+    events:
+      - http:
+          method: post
+          path: UserLoad
+    memorySize: 512
+

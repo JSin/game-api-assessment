@@ -41,9 +41,7 @@ const saveTransactionInDB = async (transaction: TransactionRequest): Promise<Suc
     throw e;
   }
 
-  return {
-    Success: true,
-  };
+  return { Success: true };
 };
 
 const isValidTransaction = (transaction: TransactionRequest): boolean => {
