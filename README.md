@@ -36,6 +36,7 @@ $ npx serverless offline start
 * Client is expected to deal with conflicts.
 
 ## If I had more time:
+* Tests!!!
 * Research an optimal way of getting the player rank.
 * Setting up JSON schemas to verify the request body is valid JSON I expect.
 * Figure out a way to keep the string literals DB fields or index names to be type checked with the models.
